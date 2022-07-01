@@ -6,12 +6,22 @@ const expenseList = document.getElementById(`expenseList`);
 
 btn.addEventListener(`click`, onClick);
 
-Object.keys(localStorage).forEach(key => {
+window.addEventListener(`DOMContentLoaded`, () => {
 
-    data = JSON.parse(localStorage.getItem(key))
+    axios.get("https://crudcrud.com/api/2895326c315549c8826c27085873d04e/data")
+        .then(response => {
 
-    displayData(data)
+            response.data.forEach(data => displayData(data))
+        })
+        .catch(err => console.log(err))
 })
+
+// Object.keys(localStorage).forEach(key => {
+
+//     data = JSON.parse(localStorage.getItem(key))
+
+//     displayData(data)
+// })
 
 function onClick() {
 
@@ -22,9 +32,9 @@ function onClick() {
         category: category.value
     }
 
-    localStorage.setItem(`${obj.amount}`, JSON.stringify(obj));
-
-    displayData(obj);
+    axios.post('https://crudcrud.com/api/2895326c315549c8826c27085873d04e/data', obj)
+        .then(response => displayData(response.data))
+        .catch(err => console.log(err))
 
     expenseAmount.value = ``;
     description.value = ``;
@@ -34,7 +44,7 @@ function onClick() {
 function displayData(data) {
 
     const li = document.createElement(`li`);
-    li.id = 'list1';
+    li.id = '_id';
 
     li.appendChild(document.createTextNode(`${data.amount} - ${data.description} - ${data.category}`))
     
@@ -44,7 +54,7 @@ function displayData(data) {
     expenseList.appendChild(li)
 }
 
-function createDeleteButton(li, {amount: key}) {
+function createDeleteButton(li, {_id: key}) {
 
     const deleteBtn = document.createElement(`button`);
 
@@ -69,12 +79,16 @@ function createEditButton(li, data) {
         document.getElementById(`description`).value = data.description;
         document.getElementById(`category`).value = data.category;
 
-        onDelete(li, data.amount)
+        onDelete(li, data._id)
     })
 }
 
 function onDelete(li, key) {
 
-    localStorage.removeItem(key)
-    li.remove()
+    axios.delete("https://crudcrud.com/api/2895326c315549c8826c27085873d04e/data/" + key)
+        .then(response => li.remove())
+        .catch(err => console.log(err))
+
+    // localStorage.removeItem(key)
+    // li.remove()
 }
