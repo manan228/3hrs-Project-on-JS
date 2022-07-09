@@ -6,14 +6,18 @@ const expenseList = document.getElementById(`expenseList`);
 
 btn.addEventListener(`click`, onClick);
 
-window.addEventListener(`DOMContentLoaded`, () => {
+window.addEventListener(`DOMContentLoaded`, async () => {
 
-    axios.get("https://crudcrud.com/api/2895326c315549c8826c27085873d04e/data")
-        .then(response => {
+    try {
 
-            response.data.forEach(data => displayData(data))
-        })
-        .catch(err => console.log(err))
+        const response = await axios.get("https://crudcrud.com/api/96c9cd4a77b34a8ea5f4b916779331c0/data")
+        
+        response.data.forEach(data => displayData(data))
+    }
+
+    catch(err) {
+        console.log(err)
+    }
 })
 
 // Object.keys(localStorage).forEach(key => {
@@ -23,7 +27,8 @@ window.addEventListener(`DOMContentLoaded`, () => {
 //     displayData(data)
 // })
 
-function onClick() {
+async function onClick() {
+    try {
 
     const obj = {
 
@@ -32,13 +37,19 @@ function onClick() {
         category: category.value
     }
 
-    axios.post('https://crudcrud.com/api/2895326c315549c8826c27085873d04e/data', obj)
-        .then(response => displayData(response.data))
-        .catch(err => console.log(err))
+        const response = await axios.post('https://crudcrud.com/api/96c9cd4a77b34a8ea5f4b916779331c0/data', obj)
+
+        displayData(response.data)
 
     expenseAmount.value = ``;
     description.value = ``;
     category.value = ``;
+}
+
+catch(err) {
+
+    console.log(err)
+}
 }
 
 function displayData(data) {
@@ -83,11 +94,22 @@ function createEditButton(li, data) {
     })
 }
 
-function onDelete(li, key) {
+async function onDelete(li, key) {
 
-    axios.delete("https://crudcrud.com/api/2895326c315549c8826c27085873d04e/data/" + key)
-        .then(response => li.remove())
-        .catch(err => console.log(err))
+    try {
+
+        const response = await axios.delete("https://crudcrud.com/api/96c9cd4a77b34a8ea5f4b916779331c0/data/" + key)
+
+        li.remove();
+    }
+
+    catch(err) {
+
+        console.log(err)
+    }
+    
+    // .then(response => li.remove())
+    // .catch(err => console.log(err))
 
     // localStorage.removeItem(key)
     // li.remove()
